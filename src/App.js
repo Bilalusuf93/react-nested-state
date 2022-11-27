@@ -1,23 +1,90 @@
 import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+// import produce from "immer"
 
+import { useImmer } from "use-immer";
+import './App.css';
+import './styles.scss';
+
+const initialState = [
+  {
+    id: 1,
+    name: 'Bilal',
+    status: {
+      isActive: false
+    },
+    profile: 'https://wallpapers.com/images/hd/cool-neon-blue-profile-picture-u9y9ydo971k9mdcf-u9y9ydo971k9mdcf.jpg'
+  },
+  {
+    id: 2,
+    name: 'Jhon',
+    status: {
+      isActive: false
+    },
+    profile: 'https://i.pinimg.com/736x/25/78/61/25786134576ce0344893b33a051160b1.jpg'
+  },
+  {
+    id: 3,
+    name: 'Sara',
+    status: {
+      isActive: false
+    },
+    profile: 'https://wallpapers.com/images/hd/cool-profile-pictures-red-anime-fw4wgkj905tjeujb-fw4wgkj905tjeujb.jpg'
+  },
+]
 function App() {
+  const [friendsList, setFriendsList] = useState(initialState);
+  const handleStatusChanged = (item) => {
+    console.log('first')
+    console.log(item);
+    const index = friendsList.findIndex(i => i.id === item.id);
+    if (index === -1) {
+      return;
+    }
+
+    // friendsList[friendsList.findIndex(i => i.id === item.id)].status.isActive = item.status.isActive ? false : true;
+    // setFriendsList(friendsList);
+
+    const friendsListCopy = friendsList;
+    friendsListCopy[index].status.isActive = item.status.isActive ? false : true;
+    setFriendsList(friendsListCopy);
+
+    // setFriendsList(prev => {
+    //   const newArr = [...prev];
+    //   newArr[index] = { ...prev[index], status: { isActive: item.status.isActive ? false : true}}
+    //   return newArr;
+    // });
+
+    // setFriendsList(produce((draft) => {
+    //   draft[index].status.isActive = item.status.isActive ? false : true;
+    // }))
+
+    // setFriendsList((draft) => {
+    //   draft[index].status.isActive = item.status.isActive ? false : true;
+    // });
+
+    //console.log(friendsListCopy);
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {friendsList?.map((item, i) => {
+        return (
+          <div className='cards'>
+            <div className='cards__items' key={i}>
+              <div className='cards__user-profile'>
+                <img src={item.profile} alt={item.name} className='cards__user-profile-image' />
+              </div>
+              <div className='cards__user-info'>
+                <div className='cards__user-info_user-info_name-status'>
+                  <div className='cards__user-info_name'>{item.name}</div>
+                  <div className={`cards__user-info_status${!item.status.isActive ? '-inactive' : ''}`}></div>
+                </div>
+              </div>
+              <button className='cards__btn' onClick={() => handleStatusChanged(item)}>{`make it${item.status.isActive ? ' Offline' : ' Online'} `}</button>
+            </div>
+          </div>
+        )
+      })}
     </div>
   );
 }
