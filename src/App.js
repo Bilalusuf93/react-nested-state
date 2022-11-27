@@ -33,7 +33,7 @@ const initialState = [
   },
 ]
 function App() {
-  const [friendsList, setFriendsList] = useState(initialState);
+  const [friendsList, setFriendsList] = useImmer(initialState);
   const handleStatusChanged = (item) => {
     console.log('first')
     console.log(item);
@@ -42,26 +42,46 @@ function App() {
       return;
     }
 
+    //This will not work
     // friendsList[friendsList.findIndex(i => i.id === item.id)].status.isActive = item.status.isActive ? false : true;
     // setFriendsList(friendsList);
 
-    const friendsListCopy = friendsList;
-    friendsListCopy[index].status.isActive = item.status.isActive ? false : true;
-    setFriendsList(friendsListCopy);
+    // -----------------------------------------
 
+    //This will also not work
+    // const friendsListCopy = friendsList;
+    // friendsListCopy[index].status.isActive = item.status.isActive ? false : true;
+    // setFriendsList(friendsListCopy);
+
+    // -----------------------------------------
+
+    // This will work as we creating new array using spread operator
+    // const friendsListCopy = [...friendsList];
+    // friendsListCopy[index].status.isActive = item.status.isActive ? false : true;
+    // setFriendsList(friendsListCopy);
+
+    // -----------------------------------------
+
+    // 1. first way of doing, uncomment to see the impact
     // setFriendsList(prev => {
     //   const newArr = [...prev];
     //   newArr[index] = { ...prev[index], status: { isActive: item.status.isActive ? false : true}}
     //   return newArr;
     // });
 
+    // -----------------------------------------
+
+    // 2. 2nd way of doing, uncomment produce from import to see the impact
     // setFriendsList(produce((draft) => {
     //   draft[index].status.isActive = item.status.isActive ? false : true;
     // }))
 
-    // setFriendsList((draft) => {
-    //   draft[index].status.isActive = item.status.isActive ? false : true;
-    // });
+    // -----------------------------------------
+
+    // 3. 3rd way of doing needs to replace useSatet with useUmmer on line number 36, uncomment to see the impact
+    setFriendsList((draft) => {
+      draft[index].status.isActive = item.status.isActive ? false : true;
+    });
 
     //console.log(friendsListCopy);
   }
